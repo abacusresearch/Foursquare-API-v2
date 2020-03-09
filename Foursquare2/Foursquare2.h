@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #ifndef __MAC_OS_X_VERSION_MAX_ALLOWED
-#import "FSWebLogin.h"
 #endif
 
 #import "FSOperation.h"
@@ -144,12 +143,6 @@ FOUNDATION_EXPORT NSString * const kFoursquare2DidRemoveAccessTokenNotification;
  @return YES if user authorised, otherwise NO.
  */
 + (BOOL)isAuthorized;
-
-/**
- Authorize user with native foursquare if this application exist on his device, otherwise open in-app web dialog.
- Method returns error if user cancels authorization.
- */
-+ (void)authorizeWithCallback:(Foursquare2Callback)callback;
 
 /**
  Removes access token from user defaults. In other words logout.

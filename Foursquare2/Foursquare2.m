@@ -29,7 +29,7 @@ NSString * const kFoursquare2NativeAuthErrorDomain = @"fs.native.auth";
 NSString * const kFoursquare2ErrorDomain = @"kFoursquare2ErrorDomain";
 NSString * const kFoursquare2DidRemoveAccessTokenNotification = @"kFoursquare2DidRemoveAccessTokenNotification";
 
-@interface Foursquare2 () <FSWebLoginDelegate>
+@interface Foursquare2 ()
 
 @property (nonatomic, copy) Foursquare2Callback authorizationCallback;
 
@@ -1498,37 +1498,6 @@ static NSMutableDictionary *attributes;
         return YES;
     }
     return NO;
-}
-
-- (void)webAuthorization {
-    NSDictionary *classAttributes = [Foursquare2 classAttributes];
-    NSString *key = classAttributes[kFOURSQUARE_CLIET_ID];
-    NSString *callbackURL = classAttributes[kFOURSQUARE_CALLBACK_URL];
-    NSString *url = [NSString stringWithFormat:
-                     @"https://foursquare.com/oauth2/authenticate?client_id=%@&response_type=token&redirect_uri=%@",
-                     key,callbackURL];
-    FSWebLogin *loginViewControler = [[FSWebLogin alloc] initWithUrl:url andDelegate:self];
-    UINavigationController *navigationController = [[UINavigationController alloc]
-                                                    initWithRootViewController:loginViewControler];
-    UIWindow *keyWindow = [[UIApplication sharedApplication] keyWindow];
-    UIViewController *controller = [self topViewController:keyWindow.rootViewController];
-    [controller presentViewController:navigationController animated:YES completion:nil];
-}
-
-+ (void)authorizeWithCallback:(Foursquare2Callback)callback {
-    NSAssert([Foursquare2 sharedInstance].authorizationCallback == nil, @"Resetting callback that has not been called");
-    [Foursquare2 sharedInstance].authorizationCallback = [callback copy];
-    if ([[Foursquare2 sharedInstance] nativeAuthorization]) {
-        return;
-    }
-    [[Foursquare2 sharedInstance] webAuthorization];
-}
-
-- (void)webLogin:(FSWebLogin *)loginViewController didFinishWithError:(NSError *)error {
-    [loginViewController.presentingViewController dismissViewControllerAnimated:YES completion:nil];
-    if (error) {
-        [Foursquare2 callAuthorizationCallbackWithError:error];
-    }
 }
 
 + (void)callAuthorizationCallbackWithError:(NSError *)error {
